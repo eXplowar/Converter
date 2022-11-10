@@ -1,0 +1,61 @@
+version: '3.4'
+
+services:
+  converter.rabbit:
+    image: rabbitmq:3-management
+    container_name: Converter.RabbitMQ
+    hostname: rabbit
+    ports:
+      - 5672:5672
+
+  converter.apiserver:
+    image: ${DOCKER_REGISTRY-}converterapiserver
+    container_name: Converter.ApiServer
+    hostname: apiserver
+    build:
+      context: .
+      dockerfile: Converter.ApiServer/Dockerfile
+    ports:
+      - "1000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+
+  converter.webapp1:
+    image: ${DOCKER_REGISTRY-}converterwebapp
+    container_name: Converter.WebApp-1
+    hostname: webapp1
+    build:
+      context: .
+      dockerfile: Converter.WebApp/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+      - "2000:80"
+
+  converter.webapp2:
+    image: ${DOCKER_REGISTRY-}converterwebapp
+    container_name: Converter.WebApp-2
+    hostname: webapp2
+    build:
+      context: .
+      dockerfile: Converter.WebApp/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+      - "2001:80"
+
+  converter.gateway:
+    image: ${DOCKER_REGISTRY-}convertergateway
+    container_name: Converter.Gateway
+    build:
+      context: .
+      dockerfile: Converter.Gateway/Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      
+networks:
+  default:
+    name: converter-network
+    driver: bridge

@@ -9,6 +9,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Converter.ApiServer", "Conv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Converter.Gateway", "Converter.Gateway\Converter.Gateway.csproj", "{D2B0A375-4210-46D8-BB90-EBE349F67B43}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Converter.Common", "Converter.Common\Converter.Common.csproj", "{51210B00-71E4-4FF9-810C-ABF916E75F85}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{25D941CD-F343-479C-9A1C-1EFA2FDBBF36}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Proxies", "Proxies", "{49285484-10DE-41BD-8477-66F3881C8326}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{A0FAEC77-4984-4389-9924-374B159F246F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApps", "WebApps", "{9FC9F954-0631-495D-9CE1-4714A26FB5D9}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{84386797-A705-4E16-AD0A-1529DB44E711}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,9 +39,23 @@ Global
 		{D2B0A375-4210-46D8-BB90-EBE349F67B43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2B0A375-4210-46D8-BB90-EBE349F67B43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2B0A375-4210-46D8-BB90-EBE349F67B43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51210B00-71E4-4FF9-810C-ABF916E75F85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51210B00-71E4-4FF9-810C-ABF916E75F85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51210B00-71E4-4FF9-810C-ABF916E75F85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51210B00-71E4-4FF9-810C-ABF916E75F85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84386797-A705-4E16-AD0A-1529DB44E711}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84386797-A705-4E16-AD0A-1529DB44E711}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84386797-A705-4E16-AD0A-1529DB44E711}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84386797-A705-4E16-AD0A-1529DB44E711}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7A7476FB-772E-4DD1-BC0A-9A7BCE4F6DCA} = {9FC9F954-0631-495D-9CE1-4714A26FB5D9}
+		{081F6BFB-8E31-40F4-99F5-CD31CD951D3A} = {A0FAEC77-4984-4389-9924-374B159F246F}
+		{D2B0A375-4210-46D8-BB90-EBE349F67B43} = {49285484-10DE-41BD-8477-66F3881C8326}
+		{51210B00-71E4-4FF9-810C-ABF916E75F85} = {25D941CD-F343-479C-9A1C-1EFA2FDBBF36}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5B6F0B7D-1BDF-4A1A-9E68-B9DDF1E02627}

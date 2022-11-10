@@ -1,0 +1,21 @@
+﻿<div class="m-2 text-center">
+    <h1 class="display-4">File upload</h1>
+</div>
+
+<form asp-controller="Files"
+      asp-action="Upload"
+      enctype="multipart/form-data"
+      method="post"
+      onsubmit="submitUpload(this);return false;">
+
+    <div class="d-inline-flex m-2">
+        <input class="form-control" id="fileInput" type="file" name="fileInput" />
+        <button class="btn btn-primary mx-2" type="submit" name="submitButton">Upload</button>
+    </div>
+
+    <output class="d-block loading" name="result"></output>
+</form>
+
+<div class="position-absolute bottom-0 end-0 m-4">
+    <div>Machine: @Environment.MachineName</div>
+</div>

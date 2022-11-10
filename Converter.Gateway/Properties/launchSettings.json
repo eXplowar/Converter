@@ -2,12 +2,12 @@
   "profiles": {
     "Converter.Gateway": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5260"
+      "applicationUrl": "http://localhost:3000"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -20,6 +20,7 @@
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "DockerfileRunArguments": "--network converter-network",
       "publishAllPorts": true
     }
   },

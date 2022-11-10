@@ -2,13 +2,13 @@
   "profiles": {
     "Converter.ApiServer": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5111"
+      "applicationUrl": "http://localhost:1000"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -22,6 +22,7 @@
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
+      "DockerfileRunArguments": "--network converter-network",
       "publishAllPorts": true
     }
   },

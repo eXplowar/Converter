@@ -1,41 +1,102 @@
+using Hangfire;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Http.Json;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using System.Reflection;
+using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+ConfigureApp(app);
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateTime.Now.AddDays(index),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+RegisterApi(app);
 
 app.Run();
 
-internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
+static void ConfigureApp(WebApplication app)
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseHangfireDashboard();
+
+    ServiceLocator.Configure(app.Services);
+}
+
+static void RegisterApi(WebApplication app)
+{
+    var apis = app.Services.GetServices<IApi>();
+
+    if (!apis.Any()) throw new ApplicationException("Api not found");
+
+    foreach (var api in apis)
+    {
+        api.Register(app);
+    }
+}
+
+static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+{
+    services.Configure<JsonOptions>(config =>
+    {
+        config.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
+    #region Register RabbitMQ settings
+    var rabbitSettings = configuration
+        .GetSection("RabbitMQ")
+        .Get<RabbitMqSettings>();
+
+    _ = rabbitSettings ?? throw new ApplicationException("Failed to read RabbitMQ settings block in configuration file");
+
+    services.AddSingleton(rabbitSettings);
+    #endregion
+
+    services.AddEndpointsApiExplorer();
+    services.AddSwaggerGen(config =>
+    {
+        var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        config.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+    });
+
+    services.AddHangfire(config => config.UseInMemoryStorage());
+    services.AddHangfireServer();
+
+    #region Max request limit
+    const int maxRequestLimit = 209715200; // 200 MB
+
+    services.Configure<IISServerOptions>(options =>
+    {
+        options.MaxRequestBodySize = maxRequestLimit;
+    });
+
+    services.Configure<KestrelServerOptions>(options =>
+    {
+        options.Limits.MaxRequestBodySize = maxRequestLimit;
+    });
+
+    services.Configure<FormOptions>(x =>
+    {
+        x.ValueLengthLimit = maxRequestLimit;
+        x.MultipartBodyLengthLimit = maxRequestLimit;
+        x.MultipartHeadersLengthLimit = maxRequestLimit;
+    });
+    #endregion
+
+    services.AddTransient<IApi, WeatherApi>();
+    services.AddTransient<IApi, ConvertHtmlToPdfApi>();
+    services.AddTransient<IApi, DownloadApi>();
+    services.AddTransient<IHtmlToPdfConverterService, PuppeteerConvertService>();
+    services.AddSingleton<IBrowserService, BrowserService>();
+    services.AddSingleton<IPublishFileService, PublishFileInMQService>();
+    services.AddSingleton<IStorageService, MemoryStorageService>();
+    services.AddSingleton<IMessageQueueService, RabbitMqService>();
 }
